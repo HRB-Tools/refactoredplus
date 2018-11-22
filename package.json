@@ -1,0 +1,16 @@
+{
+  "name": "refactoredplus",
+  "version": "1.0.0",
+  "description": "take from its ruins what you need and rebuild something better",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nils Eidmann",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "rollup": "^0.67.3",
+    "typescript": "^3.1.6"
+  }
+}
