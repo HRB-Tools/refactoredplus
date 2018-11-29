@@ -7,10 +7,10 @@ export var fil = function (spalte, expr, document) {
     }
     switch (loop) {
         case false:
-            res = document.filter(function (row) { return parseInt(row[parseInt(spalte) - 1]) == parseInt(expr); });
+            res = document.filter(function (row) { return row[parseInt(spalte) - 1] == expr; });
             break;
         case true:
-            res = document.filter(function (row) { return row.includes(parseInt(expr)) || row.includes(expr); });
+            res = document.filter(function (row) { return row.includes(row.includes(expr) || row.includes('"' + expr + '"')); });
             break;
     }
     return res;

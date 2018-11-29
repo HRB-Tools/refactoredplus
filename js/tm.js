@@ -1,12 +1,12 @@
 // Unpacks two-dimensional array into html table
 export var tm = function (csv) {
-    var htmlDoc = '';
+    var htmlDoc = "";
     csv.forEach(function (element) {
-        var row = '';
+        var row = "";
         element.forEach(function (innerElem) {
             row += "<td>" + innerElem + "</td>";
         });
-        htmlDoc += '<tr>' + row + '</tr>';
+        htmlDoc += "<tr>" + row + "</tr>";
     });
     return "<table>" + htmlDoc + "</table>";
 };

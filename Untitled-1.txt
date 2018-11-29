@@ -1,0 +1,111 @@
+GaussKronrodQuadratur:= proc(lower, upper, s,f,n)::real;
+local A,B,P,S,T,p,j,RekursivesZwischenergebnis,i,a,b,m,u,k,l,z,t,M,weights,nodes,vac,CurrentNormalizedVector,FinalResult;   
+with(LinearAlgebra):
+ 
+  
+A := [seq(a[i], i = 0 .. n)];
+B := [seq(b[i], i = 0 .. n)];
+P := [seq(p[i], i = -1 .. 2*n+1)];  #?
+S := [seq(s[i], i = -1 .. floor(n/2))];
+T := [seq(t[i], i = -1 .. floor(n/2))];
+p[-1]:= 0;
+p[0]:=1;
+for v from -1 to floor(n/2) do
+  s[v]:=0;
+  t[v]:=0
+end do;
+for j from 1 to 2*n+1 do 
+  RekursivesZwischenergebnis:= x^j;
+  for i from 0 to j-1 do
+    RekursivesZwischenergebnis:= RekursivesZwischenergebnis - 
+    int(x^j*p[i]*diff(s,x),x=lower..upper)/int(p[i]*p[i]*diff(s,x),x=lower..upper)*p[i]                  #Gram-Schmidt algorithm
+  end do;
+  p[j]:=RekursivesZwischenergebnis;
+end do;
+a[0]:=-coeff(p[1],x,0); 
+
+  #p[0+1]=(x-a[0])*p[0]-b[0]*p[0-1] -> p[1]=x*p[0]-a[0]*p[0]-b[0]*p[-1] ->
+  #p[1]=x*1-a[0]*1-0 -> a[0]=x-p[1] -> a[0]= -coeff(p[1],x,0) since p[1] is monic and of degree 1
+ 
+b[0]:=int(p[0]^2, x=lower..upper); #by definition
+for j from 1 to ceil(3*n/2) do 
+  
+  #to be exact, a only needs to be initialised up to floor(3/(2*n)). It does not hurt, however, to   #do it further. The value for a[ceil(3/(2*n))] is needed for a[ceil(3/(2*n)]anyway. Not cutting
+  #the initialisation for a[ceil(3/(2*n))] if ceil(3/(2*n) is unequal to floor(3/(2*n)) saves        #code and the evaluation of the comparison.
+    
+                                     
+  a[j]:= coeff(p[j],x,j-1)- coeff(p[j+1],x,j);
+    
+    #p[j+1]=(x-a[j])*p[j]-b[j]*p[j-1] -> p[j+1]=x*p[j]-a[j]*p[j]-b[j]p[j-1] ->
+    #coeff(p[j+1],x,j)=coeff(x*p[j],x,j)-coeff(a[j]*p[j],x,j)
+      #(since b[j]*p[j-1] is of degree j-1) -> 
+    #coeff(p[j+1],x,j)=coeff(x*p[j],x,j)-a[j], since p[j] is monic ->
+    #coeff(p[j+1],x,j)=coeff(p[j],x,j-1)-a[j]->
+    #a[j]=coeff(p[j],x,j-1)-coeff(p[j+1],x,j)
+ 
+  b[j]:=  quo((x-a[j])*p[j]-p[j+1],p[j-1],x)
+
+     #p[j+1]=(x-a[j])*p[j]-b[j]*p[j-1] -> -p[j+1]+(x-a[j])*p[j]= b[j]*p[j-1] 
+     #b[j]=((x-a[j])*p[j]-p[j+1])/p[j-1]
+
+  end do;    
+t[0]:=b[n+1];
+for m from 0 to n-2 do
+  u:=0;
+  for k from floor((m+1)/2) to 0 by -1 do
+    l:=m-k;
+    u:=u+(a[k+n+1]-a[l])*t[k]+b[k+n+1]*s[k-1]-b[l]*s[k];
+    s[k]:=u
+  end do;
+  for v from -1 to floor(n/2) do
+    Hilfsvariable:=s[v];
+    s[v]:=t[v];
+    t[v]:=Hilfsvariable
+  end do;
+end do;
+for j from floor(n/2) to 0 by -1 do
+    s[j]:=s[j-1]
+end do;
+for m from n-1 to 2*n-3 do
+  u:=0;
+  for k from m+1-n to floor((m-1)/2) do
+    l:=m-k; 
+    j:=n-1-l;
+    u:=u-(a[k+n+1]-a[l])*t[j]-b[k+n+1]*s[j]+b[l]*s[j+1];
+    s[j]:=u
+  end do;
+  if m mod 2 = 0 then
+    k:= m/2;
+    a[k+n+1]:=a[k]+(s[j]-b[k+n+1]*s[j+1])/t[j+1]
+  else
+    k:=(m+1)/2;
+    b[k+n+1]:=s[j]/s[j+1]
+  end if;
+  for v from -1 to floor(n/2) do
+    Hilfsvariable:=s[v];
+    s[v]:=t[v];
+    t[v]:=Hilfsvariable
+  end do;
+end do;
+a[2*n]:=a[n-1]-b[2*n]*s[0]/t[0];
+print(A);
+print(B);
+M:=Matrix(2*n+1);
+M(1,1):=a[0];
+for m from 2 to (2*n+1) do #generate Gauss-Kronrod-Matrix
+  M(m-1,m):= sqrt(b[m-1]);
+  M(m,m-1):= sqrt(b[m-1]);
+  M(m,m):= a[m-1];
+end do;
+weights:=Vector(2*n+1);
+nodes, vac:= Eigenvectors(M);
+for m from 1 to n do
+  CurrentNormalizedVector:= Normalize(Column(vac,m),Euclidean);
+  weights[m]=CurrentNormalizedVector[1]^2*B[m]
+end do;
+RekursivesZwischenergebnis:=0;
+for i from 1 to 2*n+1 do
+  RekursivesZwischenergebnis:=RekursivesZwischenergebnis + weights[i]*eval(f,x=nodes[i])
+end do;
+FinalResult:=RekursivesZwischenergebnis
+end proc

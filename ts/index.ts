@@ -20,6 +20,7 @@ async function main() {
 
 function display() {
   let divEl = document.createElement("div");
+  divEl.style.overflow = "auto";
   divEl.innerHTML = tm(globalArg);
   document.body.appendChild(divEl);
 }

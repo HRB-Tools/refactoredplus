@@ -38,13 +38,13 @@
 
     // Unpacks two-dimensional array into html table
     var tm = function (csv) {
-        var htmlDoc = '';
+        var htmlDoc = "";
         csv.forEach(function (element) {
-            var row = '';
+            var row = "";
             element.forEach(function (innerElem) {
                 row += "<td>" + innerElem + "</td>";
             });
-            htmlDoc += '<tr>' + row + '</tr>';
+            htmlDoc += "<tr>" + row + "</tr>";
         });
         return "<table>" + htmlDoc + "</table>";
     };
@@ -58,10 +58,10 @@
         }
         switch (loop) {
             case false:
-                res = document.filter(function (row) { return parseInt(row[parseInt(spalte) - 1]) == parseInt(expr); });
+                res = document.filter(function (row) { return row[parseInt(spalte) - 1] == expr; });
                 break;
             case true:
-                res = document.filter(function (row) { return row.includes(parseInt(expr)) || row.includes(expr); });
+                res = document.filter(function (row) { return row.includes(row.includes(expr) || row.includes('"' + expr + '"')); });
                 break;
         }
         return res;
@@ -112,10 +112,10 @@
                     case 0: return [4 /*yield*/, load()];
                     case 1:
                         csvText = _a.sent();
-                        rows = csvText.split('\n');
+                        rows = csvText.split("\n");
                         csv = [];
                         rows.forEach(function (element) {
-                            var row = element.split(';');
+                            var row = element.split(";");
                             csv.push(row);
                         });
                         csvDocument = csv;
@@ -126,22 +126,23 @@
         });
     }
     function display() {
-        var divEl = document.createElement('div');
+        var divEl = document.createElement("div");
+        divEl.style.overflow = "auto";
         divEl.innerHTML = tm(globalArg);
         document.body.appendChild(divEl);
     }
     function filter() {
-        var spalte = prompt('Spalte: ');
-        var expression = prompt('Wert: ');
+        var spalte = prompt("Spalte: ");
+        var expression = prompt("Wert: ");
         globalArg = fil(spalte, expression, globalArg);
         display();
         globalArg = csvDocument;
     }
     document.onreadystatechange = function () {
         if (document.readyState === "complete") {
-            clicktouch('#csv', main);
-            clicktouch('#display', display);
-            clicktouch('#filter', filter);
+            clicktouch("#csv", main);
+            clicktouch("#display", display);
+            clicktouch("#filter", filter);
         }
     };
 

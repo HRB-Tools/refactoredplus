@@ -33,10 +33,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { clicktouch } from './clicktouch';
-import { load } from './fileio';
-import { tm } from './tm';
-import { fil } from './fil';
+import { clicktouch } from "./clicktouch";
+import { load } from "./fileio";
+import { tm } from "./tm";
+import { fil } from "./fil";
 var csvDocument;
 var globalArg;
 function main() {
@@ -47,10 +47,10 @@ function main() {
                 case 0: return [4 /*yield*/, load()];
                 case 1:
                     csvText = _a.sent();
-                    rows = csvText.split('\n');
+                    rows = csvText.split("\n");
                     csv = [];
                     rows.forEach(function (element) {
-                        var row = element.split(';');
+                        var row = element.split(";");
                         csv.push(row);
                     });
                     csvDocument = csv;
@@ -61,21 +61,22 @@ function main() {
     });
 }
 function display() {
-    var divEl = document.createElement('div');
+    var divEl = document.createElement("div");
+    divEl.style.overflow = "auto";
     divEl.innerHTML = tm(globalArg);
     document.body.appendChild(divEl);
 }
 function filter() {
-    var spalte = prompt('Spalte: ');
-    var expression = prompt('Wert: ');
+    var spalte = prompt("Spalte: ");
+    var expression = prompt("Wert: ");
     globalArg = fil(spalte, expression, globalArg);
     display();
     globalArg = csvDocument;
 }
 document.onreadystatechange = function () {
     if (document.readyState === "complete") {
-        clicktouch('#csv', main);
-        clicktouch('#display', display);
-        clicktouch('#filter', filter);
+        clicktouch("#csv", main);
+        clicktouch("#display", display);
+        clicktouch("#filter", filter);
     }
 };

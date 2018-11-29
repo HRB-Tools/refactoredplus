@@ -9,12 +9,12 @@ export const fil = (spalte: string, expr: string, document: any[][]) => {
   switch (loop) {
     case false:
       res = document.filter(
-        row => parseInt(row[parseInt(spalte) - 1]) == parseInt(expr)
+        row => row[parseInt(spalte) - 1] == expr
       );
       break;
     case true:
       res = document.filter(
-        row => row.includes(parseInt(expr)) || row.includes(expr)
+        row => row.includes(row.includes(expr) || row.includes('"'+expr+'"'))
       );
       break;
   }
