@@ -1,6 +1,7 @@
 body {
   margin: 0;
   background-color: azure;
+  font-family: 'Roboto-Thin', sans-serif;
 }
 ul {
   list-style-type: none;
@@ -75,13 +76,24 @@ img {
 }
 
 table {
-  border: 1px solid black;
-  border-collapse: collapse;
-  overflow: auto;
+  background-color: #fafafa;
+  border: 1px solid #2e2e2e;
+  border-spacing: 0;
 }
-td {
-  border: 1px solid gray;
-  border-collapse: collapse;
-  padding: 0 0;
-  min-width: 5px;
+td, th {
+  padding: 8px;
+  border-left: 1px solid #2e2e2e;
+  border-bottom: 1px solid #2e2e2e;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+td:first-child, th:first-child {
+  border-left: none;
+}
+
+tr:nth-child(2n) {
+  background-color: #d4d4d4;
 }
